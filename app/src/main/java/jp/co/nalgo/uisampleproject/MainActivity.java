@@ -8,13 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener {
+import jp.co.nalgo.uisampleproject.dummy.DummyContent;
+
+public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener, ItemFragment.OnListFragmentInteractionListener {
     TabLayout mTabLayout;
 
 
@@ -22,6 +25,20 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        View customActionBarView = this.getActionBarView();
+        // ActionBarの取得
+        ActionBar actionBar = this.getSupportActionBar();
+        // 戻るボタンを表示するかどうか('<' <- こんなやつ)
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        // タイトルを表示するか（もちろん表示しない）
+        actionBar.setDisplayShowTitleEnabled(false);
+        // iconを表示するか（もちろん表示しない）
+        actionBar.setDisplayShowHomeEnabled(false);
+        // ActionBarにcustomViewを設定する
+        actionBar.setCustomView(customActionBarView);
+        // CutomViewを表示するか
+        actionBar.setDisplayShowCustomEnabled(true);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         MyPagerAdapter pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -40,6 +57,11 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
     }
 
@@ -72,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 case 0:
                     return BlankFragment.newInstance("test1", "test1");
                 case 1:
-                    return BlankFragment.newInstance("test2", "test2");
+                    return ItemFragment.newInstance(10);
                 case 2:
                     return BlankFragment.newInstance("test3", "test3");
                 case 3:
@@ -92,5 +114,27 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
             return mTabTitles[position];
         }
 
+    }
+
+    private View getActionBarView() {
+
+        // 表示するlayoutファイルの取得
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.custom_action_bar, null);
+
+        // 各Widgetの設定
+        //TextView textView = (TextView)view.findViewById(R.id.action_bar_title);
+
+        // ここは画像取得をしていることにしてください。
+        // ImageView imageView = (ImageView)view.findViewById(R.id.action_bar_icon);
+        //
+        // CustomViewにクリックイベントを登録する
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //self.finish();
+            }
+        });
+        return view;
     }
 }
